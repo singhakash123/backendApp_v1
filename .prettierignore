@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (keep secrets safe)
+.env
+.env.*
+!.env.example
+
+# Coverage reports
+coverage/
+
+# OS / system files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+
+# Uploads / static files
+uploads/
+public/
+
+# Lock files (optional - keep if team needs consistency)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
