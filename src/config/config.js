@@ -7,14 +7,16 @@ dotenv.config({
 function validation(key) {
   const value = process.env[key];
 
-  if (!value) {
-    throw new Error("dotenv file is missing");
+  if (!value || value.trim() === "") {
+    throw new Error(`Missing environment variable: ${key}`);
   }
 
   return value.trim();
 }
 
+const port = Number(process.env.PORT);
 export const config = Object.freeze({
-  PORT: process.env.PORT ? Number(process.env.PORT) : 3000,
+  PORT: port && !isNaN(port) ? port : 3000,
   MONGODB_URI: validation("MONGODB_URI"),
+  CORS_ORIGIN: validation("CORS_ORIGIN"),
 });
