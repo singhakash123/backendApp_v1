@@ -13,6 +13,7 @@ export const db_connect = async () => {
     console.log(
       `Db connected :|| HOST : ${connectionInstance.connection.host}`
     );
+    // console.log(connectionInstance.connection);
 
     // connection events (important in production)
 

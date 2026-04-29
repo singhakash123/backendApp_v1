@@ -8,9 +8,9 @@ git branch -M main
 git remote add origin https://github.com/singhakash123/backendApp_v1.git
 git push -u origin main
 
-R1eH2gq8wUz7ymVk
+exGTbHEqQUKEIEC2
 
-mongodb+srv://akashlife2004_db_user:R1eH2gq8wUz7ymVk@cluster0.210mx45.mongodb.net/
+mongodb+srv://akash7689:akash7689@cluster0.kql6fec.mongodb.net
 
 class ApiResponse {
 constructor(statusCode, message = "Success", data = null) {

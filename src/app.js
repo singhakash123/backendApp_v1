@@ -6,6 +6,7 @@ import morgan from "morgan";
 import { limit } from "./constant.js";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
+import { authRouter } from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -56,4 +57,6 @@ app.use("/api", limiter);
 
 app.use(cookieParser());
 
+// from here will be the routing setting :
+app.use('/api/v1/users' , authRouter) // this will be consider as prefix for the authrouter  \\
 export { app };
