@@ -1,62 +1,50 @@
 import express from "express";
 import helmet from "helmet";
-import cors from "cors";
-import { config } from "./config/config.js";
 import morgan from "morgan";
-import { limit } from "./constant.js";
-import rateLimit from "express-rate-limit";
+import cors from "cors";
 import cookieParser from "cookie-parser";
-import { authRouter } from "./routes/auth.routes.js";
+import rateLimit from "express-rate-limit";
+
+import { config } from "./config/config.js";
+import { limit } from "./constant.js";
 
 const app = express();
 
-// trust proxy (IMPORTANT for production)
-app.set("trust proxy", 1);
-
-// security : helmet
+// 🔥 Security
 app.use(helmet());
-// helmet is a security middleware for Express.js that helps protect your backend by setting important HTTP headers.
 
+// 🔥 CORS
 app.use(
   cors({
-    origin: config.CORS_ORIGIN,
+    origin: config.CORS_ORIGIN || "*",
     credentials: true,
   })
 );
 
-// morgan :
+// 🔥 Logging
 app.use(morgan("dev"));
 
-// body parsing :
-app.use(
-  express.json({
-    limit,
-  })
-);
-
-app.use(
-  express.urlencoded({
-    limit,
-    extended: true,
-  })
-);
-
-// for the static file :
-app.use(express.static("public"));
-
-// rate limit :
+// 🔥 Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
   standardHeaders: "draft-8",
   legacyHeaders: false,
-  ipv6Subnet: 56,
 });
-
 app.use("/api", limiter);
 
+// 🔥 Body parsing
+app.use(express.json({ limit }));
+app.use(express.urlencoded({ extended: true, limit }));
+
+// 🔥 Static
+app.use(express.static("public"));
+
+// 🔥 Cookies
 app.use(cookieParser());
 
-// from here will be the routing setting :
-app.use('/api/v1/users' , authRouter) // this will be consider as prefix for the authrouter  \\
+// 🔥 Routes
+// import userRoutes from "./routes/user.routes.js";
+// app.use("/api/v1/users", userRoutes);
+
 export { app };

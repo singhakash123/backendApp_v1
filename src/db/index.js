@@ -4,32 +4,13 @@ import { db_name } from "../constant.js";
 
 export const db_connect = async () => {
   try {
-    const url = `${config.MONGODB_URI}/${db_name}`;
+    const uri = `${config.MONGODB_URI}/${db_name}`;
 
-    const connectionInstance = await mongoose.connect(url, {
-      serverSelectionTimeoutMS: 5000,
-    });
+    const connectionIntense = await mongoose.connect(uri);
 
-    console.log(
-      `Db connected :|| HOST : ${connectionInstance.connection.host}`
-    );
-    // console.log(connectionInstance.connection);
-
-    // connection events (important in production)
-
-    mongoose.connection.on("error", (err) => {
-      console.error(`mongodb connection error : ${err}`);
-    });
-
-    mongoose.connection.on("disconnect", () => {
-      console.warn("mongodb disconnected");
-    });
-
-    mongoose.connection.on("reconnected", () => {
-      console.log(`Mongodb reconnected`);
-    });
+    console.log(`DB Host : ${connectionIntense.connection.host}`);
   } catch (error) {
-    console.log(`Dtabase connection failed : `, error.message);
+    console.error(`Database connection failed : ${error.message}`);
     process.exit(1);
   }
 };

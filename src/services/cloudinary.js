@@ -4,53 +4,43 @@ import fs from "fs/promises";
 
 cloudinary.config({
   cloud_name: config.CLOUDINARY_CLOUD_NAME,
-  api_key: config.CLOUDINARY_API_KEY,
-  api_secret: config.CLOUDINARY_API_SECRET,
+  api_key: config.CLOUDINARY_CLOUD_API_KEY,
+  api_secret: config.CLOUDINARY_CLOUD_API_SECRET,
 });
 
-const unlinkFileHelper = async (filePath) => {
+// 🔥 helper
+const removeFileAfterUploadOrError = async (filePath) => {
   try {
-    if (!filePath) return;
-
-    await fs.unlink(filePath);
-    console.log(`🗑️ File removed: ${filePath}`);
-  } catch (error) {
-    if (error.code === "ENOENT") {
-      console.warn(`⚠️ File not found: ${filePath}`);
-    } else {
-      console.error(`❌ Failed to delete file: ${filePath}`, error.message);
+    if (filePath) {
+      await fs.unlink(filePath);
     }
+  } catch (error) {
+    console.error("File delete error:", error.message);
   }
 };
 
 export const uploadOnCloudinary = async (
   localFilePath,
-  folderName = "uploads"
+  folderName = "general"
 ) => {
   try {
-    if (!localFilePath) {
-      console.warn("⚠️ No file path provided for upload");
-      return null;
-    }
+    if (!localFilePath) return null;
 
-    const uploadResult = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
+    const response = await cloudinary.uploader.upload(localFilePath, {
       folder: folderName,
+      resource_type: "auto",
     });
 
-    // cleanup (non-blocking)
-    unlinkFileHelper(localFilePath);
+    await removeFileAfterUploadOrError(localFilePath);
 
     return {
-      url: uploadResult.secure_url,
-      public_id: uploadResult.public_id,
+      url: response.secure_url,
+      public_id: response.public_id,
     };
   } catch (error) {
-    console.error("❌ Cloudinary upload failed:", error.message);
+    await removeFileAfterUploadOrError(localFilePath);
 
-    // cleanup even if upload fails
-    unlinkFileHelper(localFilePath);
-
-    return null; // IMPORTANT
+    console.error("Cloudinary upload failed:", error.message);
+    throw new Error("File upload failed"); // 🔥 important
   }
 };
